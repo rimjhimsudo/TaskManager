@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/spinner"
-        android:title="ActionBar Spinner"
+        android:title="ActionBar_Spinner"
         app:actionViewClass="android.widget.Spinner"
-        android:background="#ff00"
         app:showAsAction="always"
         />
     <item
         android:id="@+id/search_bar"
-        android:title="ActonBar search"
+        android:title="ActionBar search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always"/>
     <item android:id="@+id/item1"
