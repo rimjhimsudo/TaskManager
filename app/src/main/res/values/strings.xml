@@ -21,6 +21,21 @@
         <item>3</item>
 
     </string-array>
+    <string name="category_sort">All category</string>
+
+    <string-array name="category_sort_arrays">
+        <item>Music</item>
+        <item>Household</item>
+        <item>Office</item>
+        <item>College</item>
+        <item>Payments</item>
+        <item>Password</item>
+        <item>StudyNotes</item>
+        <item>Thoughts</item>
+        <item>Shop</item>
+
+    </string-array>
+
 
 
 </resources>
