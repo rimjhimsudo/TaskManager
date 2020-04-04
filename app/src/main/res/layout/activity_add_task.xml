@@ -66,6 +66,28 @@
     </LinearLayout>
 
     <!--android:background="@drawable/border"-->
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/category_arrays"
+        android:prompt="@string/category_prompt"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:padding="20dp"
+        />
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/priority_arrays"
+        android:prompt="@string/priority_prompt"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:padding="20dp"
+        />
 
     <Button
         android:id="@+id/button"

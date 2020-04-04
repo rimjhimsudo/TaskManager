@@ -44,6 +44,7 @@ public class AddTask extends AppCompatActivity {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 TimePickerDialog timePickerDialog=new TimePickerDialog(AddTask.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
