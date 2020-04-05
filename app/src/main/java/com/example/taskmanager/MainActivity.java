@@ -8,6 +8,7 @@ import androidx.core.view.MenuItemCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import com.example.taskmanager.Database.AppExecutors;
 import com.example.taskmanager.Database.TaskDatabase;
 import com.example.taskmanager.Model.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -35,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TaskAdaptors taskAdaptors;
     private TaskDatabase taskDatabase;
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //int position = viewHolder.getAdapterPosition();
         floatingActionButton =findViewById(R.id.floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
         taskAdaptors=new TaskAdaptors(this);
         recyclerView.setAdapter(taskAdaptors);
         taskDatabase=TaskDatabase.getInstance(getApplicationContext());
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT| ItemTouchHelper.LEFT) {
+
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
@@ -64,18 +70,45 @@ public class MainActivity extends AppCompatActivity {
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        int position = viewHolder.getAdapterPosition();
-                        List<Task> tasks = taskAdaptors.getTasks();
+                         position = viewHolder.getAdapterPosition();
+                        final List<Task> tasks = taskAdaptors.getTasks();
+
                         taskDatabase.taskDao().deleteTask(tasks.get(position));
+                        //notify itemremove noify to adaptor
+                        //new code
+
+                        View view=findViewById(R.id.mainRelativeLayout);
+                        Snackbar snackbar=Snackbar.make(view,"1 task deleted", Snackbar.LENGTH_LONG);
+                        //delayfunction on thread
+                        //snackbar gets stopped when
+                        snackbar.setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                tasks.add(position, tasks.get(position));
+                                taskAdaptors.notifyItemInserted(position);
+
+                                Log.d("change made?","listener worked");
+
+                            }
+                        });
+                        snackbar.show();
                         retrieveTasks();
                     }
                 });
             }
         }).attachToRecyclerView(recyclerView);
-
-
-
 }
+
+   /* private void showUndoSnackbar() {
+
+    }
+
+    private void undoDelete() {
+        taskAdaptors.getTasks()
+    }
+
+    */
+
     @Override
     public  boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater=getMenuInflater();
@@ -115,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                final List<Task> persons=taskDatabase.taskDao().loadAllTasks();
+                final List<Task> tasks=taskDatabase.taskDao().loadAllTasks();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        taskAdaptors.setTasks(persons);
+                        taskAdaptors.setTasks(tasks);
                     }
                 });
             }
