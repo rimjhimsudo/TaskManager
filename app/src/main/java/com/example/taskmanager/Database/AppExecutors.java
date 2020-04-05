@@ -45,6 +45,8 @@ public class AppExecutors {
     private AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
         this.diskIO = diskIO;
         this.networkIO = networkIO;
+        //dskio and netwr o works same
+        //cant touch ui element  from io thread
         this.mainThread = mainThread;
     }
 

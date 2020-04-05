@@ -22,6 +22,9 @@ import java.util.List;
 
 public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolder>{
     private  Context context;
+
+
+
     private List<Task> tTaskList;
 
     public TaskAdaptors(Context context){
@@ -42,12 +45,28 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
     }
 
     @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+
+    }
+
+    @Override
     public int getItemCount() {
         if(tTaskList==null){
             return 0;
         }
         return tTaskList.size();
     }
+    public  void swipeItem(int position){
+        tTaskList.remove(position);
+        notifyItemRemoved(position);
+
+    }
+    public  void restoreItem(Task task, int position){
+        tTaskList.add(position,task);
+        notifyItemInserted(position);
+    }
+
     public  void setTasks(List<Task> taskList){
         tTaskList=taskList;
         notifyDataSetChanged();

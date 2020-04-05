@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TaskAdaptors taskAdaptors;
     private TaskDatabase taskDatabase;
-    private int position;
+    boolean canDeletefromDB=true;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,35 +69,55 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                List<Task> tasks=taskAdaptors.getTasks();
+                final int position = viewHolder.getAdapterPosition();
+                final Task  removedItem=tasks.get(position);
+                //final int deletedIndex=viewHolder.getAdapterPosition();
+                taskAdaptors.swipeItem(position);
+                // tTaskList.add(position,task);
+
+                View view=findViewById(R.id.mainRelativeLayout);
+                Snackbar snackbar=Snackbar.make(view,"1 task deleted", Snackbar.LENGTH_SHORT);
+                // getitemid() in adaptors
+                //delayfunction on thread
+                //snackbar gets stopped when
+                //snackbar.dismiss();//interface
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+
                     @Override
-                    public void run() {
-                         position = viewHolder.getAdapterPosition();
-                        final List<Task> tasks = taskAdaptors.getTasks();
+                    public void onClick(View v) {
+                        taskAdaptors.restoreItem(removedItem,position);
+                        //canDeletefromDB=false;
+                        Log.d("change made?","listener worked");
 
-                        taskDatabase.taskDao().deleteTask(tasks.get(position));
-                        //notify itemremove noify to adaptor
-                        //new code
-
-                        View view=findViewById(R.id.mainRelativeLayout);
-                        Snackbar snackbar=Snackbar.make(view,"1 task deleted", Snackbar.LENGTH_LONG);
-                        //delayfunction on thread
-                        //snackbar gets stopped when
-                        snackbar.setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                tasks.add(position, tasks.get(position));
-                                taskAdaptors.notifyItemInserted(position);
-
-                                Log.d("change made?","listener worked");
-
-                            }
-                        });
-                        snackbar.show();
-                        retrieveTasks();
                     }
-                });
-            }
+                }).addCallback(new Snackbar.Callback(){
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT){
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    taskDatabase.taskDao().deleteTask((int) taskAdaptors.getItemId(position));
+                                    //List<Task> tasks = taskAdaptors.getTasks();
+                                    //final Task  removedItem=tasks.get(position);
+
+
+                                    // only write db chnges in run thread
+                                    //notify itemremove noify to adaptor
+                                    //new code
+                                    Log.d("DELETE","deletion worked");
+                                    retrieveTasks(); //helping n retreving task and showing task on recyclerview again
+                                }
+                            });
+                        }
+                    }
+                }).show();
+                //snackbar.addCallback(new Snackbar.Callback());
+
+                }
+
+
         }).attachToRecyclerView(recyclerView);
 }
 
@@ -108,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     */
+
 
     @Override
     public  boolean onCreateOptionsMenu(Menu menu){
