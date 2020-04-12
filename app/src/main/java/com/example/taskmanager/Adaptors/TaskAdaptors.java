@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,23 +19,20 @@ import com.example.taskmanager.Database.TaskDatabase;
 import com.example.taskmanager.Model.Task;
 import com.example.taskmanager.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolder>{
-    private  Context context;
 
-
-
-    private List<Task> tTaskList;
-
-    public TaskAdaptors(Context context){
-        this.context=context;
+    private ArrayList<Task> tTaskList;
+    public TaskAdaptors(ArrayList<Task> list){
+        this.tTaskList=list;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.task_item,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.task_item,viewGroup,false);
         return new MyViewHolder(view);
     }
 
@@ -46,9 +44,13 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
 
     @Override
     public long getItemId(int position) {
-        return super.getItemId(position);
+       //return super.getItemId(position);
 
+        return Long.valueOf(tTaskList.get(position).getId());
+        //explcit to long from id
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -67,13 +69,28 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
         notifyItemInserted(position);
     }
 
-    public  void setTasks(List<Task> taskList){
+   /* public  void setTasks(List<Task> taskList){
         tTaskList=taskList;
         notifyDataSetChanged();
+    }*/
+   /* public void updateData(int id) {
+        //tTaskList=taskList;
+        //tTaskList.clear();
+        Task task=new Task(id);
+        //tTaskList.addAll(taskList); //this s adapter method so addall add n arraylst of maiiiiinactiiiviity
+        notifyDataSetChanged();
+        tTaskList.add(task);
     }
-    public List<Task> getTasks(){
-        return tTaskList;
-    }
+
+    */
+   public void updateList(ArrayList<Task> list){
+       tTaskList=new ArrayList<>();
+       tTaskList.addAll(list);
+       notifyDataSetChanged();
+
+   }
+
+
 
 
     class MyViewHolder extends RecyclerView.ViewHolder{
@@ -84,7 +101,7 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
 
         MyViewHolder(@NonNull final View itemView){
             super(itemView);
-            tDb=TaskDatabase.getInstance(context);
+            //tDb=TaskDatabase.getInstance(context);
             title=itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
 
@@ -93,9 +110,9 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
                 @Override
                 public void onClick(View v) {
                     int elementId=tTaskList.get(getAdapterPosition()).getId();
-                    Intent i=new Intent(context, AddTask.class);
+                    Intent i=new Intent(v.getContext(), AddTask.class);
                     i.putExtra(Constants.UPDATE_Task_Id, elementId);
-                    context.startActivity(i);
+                    v.getContext().startActivity(i);
 
                 }
             });

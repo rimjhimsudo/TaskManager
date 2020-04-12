@@ -20,7 +20,10 @@ public abstract class TaskDatabase extends RoomDatabase {
             synchronized (LOCK){
                 Log.d(LOG_TAG, "creating databse");
                 taskinstance= Room.databaseBuilder(context.getApplicationContext(),
-                TaskDatabase.class,TaskDatabase.DATABASE_NAME).build();
+                TaskDatabase.class,TaskDatabase.DATABASE_NAME)
+                        .fallbackToDestructiveMigration()
+                        .allowMainThreadQueries()
+                        .build();
             }
         }
         Log.d(LOG_TAG, "starting with database");

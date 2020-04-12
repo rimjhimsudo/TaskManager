@@ -8,9 +8,9 @@
         app:showAsAction="always"
         />
     <item
-        android:id="@+id/search_bar"
+        android:id="@+id/searchbar"
         android:title="ActionBar search"
-        app:actionViewClass="android.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"/>
     <item android:id="@+id/item1"
         android:title="item1"

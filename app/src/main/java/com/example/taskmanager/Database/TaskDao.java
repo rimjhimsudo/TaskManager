@@ -17,8 +17,12 @@ public interface TaskDao {
     void insertTask(Task task);
     @Update
     void updateTask(Task task);
+    //change to int
+
     @Query("delete from Task where id=:id")
     void deleteTask(int id);
+    //@Delete
+    //void  deleteTask(Task task);
     @Query("Select * from TASK WHERE id=:id")
     Task loadTaskByID(int id);
 }

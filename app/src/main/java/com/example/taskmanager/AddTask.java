@@ -37,8 +37,9 @@ public class AddTask extends AppCompatActivity {
         date=findViewById(R.id.edit_date);
         time=findViewById(R.id.edit_time);
         //doubt
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        /*getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);*/ //ctrl shft + backslash
         //find view by id
         initViews();
         //Database work
@@ -127,7 +128,11 @@ public class AddTask extends AppCompatActivity {
                     tasksave.setId(tTaskId);
                     tDb.taskDao().updateTask(tasksave);
                 }
-                finish();
+                //Intent intent=new Intent(tTas);
+                intent.putExtra("id",tTaskId);
+                setResult(2,intent);
+                finish();//finishing activity
+
             }
         });
 
