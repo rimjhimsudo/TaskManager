@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskmanager.AddTask;
 import com.example.taskmanager.Constants.Constants;
 import com.example.taskmanager.Database.TaskDatabase;
+import com.example.taskmanager.MainActivity;
 import com.example.taskmanager.Model.Task;
 import com.example.taskmanager.R;
 
@@ -104,15 +105,18 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
             //tDb=TaskDatabase.getInstance(context);
             title=itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-
+TaskAdaptors  a = TaskAdaptors.this;
+MyViewHolder b=this;
             editImage = itemView.findViewById(R.id.edit_Image);
             editImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    View.OnClickListener a=  this;
                     int elementId=tTaskList.get(getAdapterPosition()).getId();
                     Intent i=new Intent(v.getContext(), AddTask.class);
                     i.putExtra(Constants.UPDATE_Task_Id, elementId);
-                    v.getContext().startActivity(i);
+                    //v.getContext().st(i, 2);
+                    //v.getContext().startActivity(i);
 
                 }
             });

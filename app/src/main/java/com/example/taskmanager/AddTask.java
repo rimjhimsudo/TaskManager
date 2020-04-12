@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -118,19 +119,29 @@ public class AddTask extends AppCompatActivity {
     private void onSavebuttonclicked() {
         final Task tasksave=new Task(title.getText().toString(),
                 description.getText().toString());
+
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
+                int val;
+                Intent resultintent=new Intent();
                 if(!intent.hasExtra(Constants.UPDATE_Task_Id)){
-                    tDb.taskDao().insertTask(tasksave);
+                   val = tDb.taskDao().insertTask(tasksave).intValue();
+                    resultintent.putExtra("result",val);
+                    Log.d("tag","showafterfxnrun"+val);
+                    setResult(RESULT_OK,resultintent);
                 }
                 else{
                     tasksave.setId(tTaskId);
                     tDb.taskDao().updateTask(tasksave);
+                    val=tTaskId;
+                    resultintent.putExtra("result",val);
+                    Log.d("tag","showafterfxnrun"+val);
+                    setResult(RESULT_OK,resultintent);
                 }
-                //Intent intent=new Intent(tTas);
-                intent.putExtra("id",tTaskId);
-                setResult(2,intent);
+
+
+
                 finish();//finishing activity
 
             }

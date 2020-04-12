@@ -14,7 +14,8 @@ public interface TaskDao {
     @Query("Select * from Task ORDER BY ID")
     List<Task> loadAllTasks();
     @Insert
-    void insertTask(Task task);
+    Long insertTask(Task task);
+    //gve id if there iis taskkk
     @Update
     void updateTask(Task task);
     //change to int
@@ -25,6 +26,7 @@ public interface TaskDao {
     //void  deleteTask(Task task);
     @Query("Select * from TASK WHERE id=:id")
     Task loadTaskByID(int id);
+
 }
 
 

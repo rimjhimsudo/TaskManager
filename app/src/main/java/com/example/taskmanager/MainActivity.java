@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,12 +38,14 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.addAll;
+
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private TaskAdaptors taskAdaptors;
     private TaskDatabase taskDatabase;
-    boolean canDeletefromDB=true;
+    private static final String TAG = "MyActivity";
     private ArrayList<Task> taskList = new ArrayList<>();
     int postion;
     //everything should be done through 1 list do avoid database calls
@@ -69,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 //startActivity(new Intent(MainActivity.this, AddTask.class));
                 //startActivityForResult(intent, 2)
                 Intent intent=new Intent(MainActivity.this,AddTask.class);
-                startActivityForResult(intent, 2);
+                MainActivity.this.startActivityForResult(intent, 2);
+                //startActvity s not called from task addaptor but from main activity so main activity reference
             }
         });
         recyclerView=findViewById(R.id.recyclerView);
@@ -149,18 +153,30 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent taskid)
-    {
-        super.onActivityResult(requestCode, resultCode, taskid);
+    protected void onActivityResult(int requestCode, int resultCode, Intent taskintent) {
+        //super.onActivityResult(requestCode, resultCode, taskid);
         // check if the request code is same as what is passed  here it is 2
-        if(requestCode==2)
-        {  updateListOnView();
+        super.onActivityResult(requestCode, resultCode, taskintent);
+        Log.d(TAG,"show"+resultCode);
+        Log.d(TAG,"show"+requestCode);
+        if (requestCode == 2) {
+            Log.d(TAG,"showinsde"+resultCode);
+            Log.d(TAG,"showinsde"+requestCode);
+            if (resultCode == RESULT_OK) {
+
+                int id = taskintent.getIntExtra("result", 0);
+                //String s = String.valueOf(id);
+
+                //Toast.makeText(getApplicationContext(), "s", Toast.LENGTH_LONG).show();
+                Log.d(TAG,"showiinsderesult"+id );
+                updateListOnView(id);
+            }
             // int id=taskid.getIntExtra("id",-1);
-           // retrieveTasks();
+            // retrieveTasks();
             //taskAdaptors.notifyDataSetChanged();
             //taskAdaptors.updateData(id);
-             //cant do this because it is updatng database again
-           // taskAdaptors.setTasks(taskList);
+            //cant do this because it is updatng database again
+            // taskAdaptors.setTasks(taskList);
 
 
 //            AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -279,11 +295,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
-    public void updateListOnView(){
-        taskList.clear();
+    public void updateListOnView(int id){
+        //taskList.clear();
         //tTaskList=new ArrayList<>();
-        taskList.addAll(taskList);
+       /* ArrayList<Task> newlist= new ArrayList<>();
+        newlist.addAll(taskDatabase.taskDao().loadAllTasks());
+        taskList.addAll(newlist);
         taskAdaptors.notifyDataSetChanged();
+       */
+        Task task=taskDatabase.taskDao().loadTaskByID(id);
+        /*for(Task newTask:taskList){
 
+            if(newTask.getId() ==  id){
+                taskList.set()
+            }
+        }*/
+        taskList.add(task);
+        //taskList.add(id,task);
+       // Log.d(TAG,taskList.get(id).getTitle());
+        taskAdaptors.notifyDataSetChanged();
+        //taskList.set
     }
 }
