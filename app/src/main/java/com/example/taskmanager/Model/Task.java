@@ -27,14 +27,15 @@ public class Task implements Serializable
     @PrimaryKey(autoGenerate = true)
     int id;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, String category) {
         this.title = title;
         this.description = description;
+        this.category=category;
     }
 
     String title;
     String description;
-    //String category;
+    public  String category;
     //String priority;
    // @ColumnInfo(name = "creationDate")
    // @TypeConverters({DateConverter.class})
@@ -57,10 +58,10 @@ public class Task implements Serializable
         this.description = description;
     }
 
-    /**public void setCategory(String category) {
-        this.category = category;
+    public void setCategory(String category) {
+        category = category;
     }
-
+    /**
     public void setPriority(String priority) {
         this.priority = priority;
     }
@@ -83,10 +84,10 @@ public class Task implements Serializable
         return description;
     }
 
-   /* public String getCategory() {
+    public String getCategory() {
         return category;
     }
-
+/*
     public String getPriority() {
         return priority;
     }
@@ -105,7 +106,7 @@ public class Task implements Serializable
         this.id = id;
         this.title = title;
         this.description = description;
-        //this.category = category;
+        this.category = category;
         //this.priority = priority;
        // this.creationDate = creationDate;
     }

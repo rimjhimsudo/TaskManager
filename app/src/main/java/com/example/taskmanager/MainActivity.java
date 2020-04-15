@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -36,7 +37,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import static java.util.Collections.addAll;
 
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private TaskDatabase taskDatabase;
     private static final String TAG = "MyActivity";
     private ArrayList<Task> taskList = new ArrayList<>();
+    String[] spinneritems;
     int postion;
     //everything should be done through 1 list do avoid database calls
     //avod callng again
@@ -171,6 +175,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 Log.d(TAG,"showiinsderesult"+id );
                 updateListOnView(id);
             }
+           else if (resultCode==2){
+                //taskAdaptors.onActivityResult(2, 2, taskintent);
+                int setid=taskintent.getIntExtra("result",0);
+               // taskList.get(taskAdaptors.getAdapterPosition()).getId();
+                Log.d("UPDATE","worked"+setid);
+                setUpdateListOnView(setid);
+
+            }
             // int id=taskid.getIntExtra("id",-1);
             // retrieveTasks();
             //taskAdaptors.notifyDataSetChanged();
@@ -220,12 +232,48 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         SearchView searchView=(SearchView) menuItem1.getActionView();
         searchView.setOnQueryTextListener(this);
         //Spinner spinner=findViewById(R.id.spinner);
-        Spinner spinner= (Spinner) MenuItemCompat.getActionView(menuItem);//deprecated
+        Spinner spinner= (Spinner) menuItem.getActionView();
+        //deprecated
+        //Spinner spinner=  MenuItemCompat.getActionProvider(menuItem);
+       // AppCompatSpinner spinner= (AppCompatSpinner) MenuItemCompat.getActionView(menuItem);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+
+        spinneritems=getResources().getStringArray(R.array.category_sort_arrays);
+        final ArrayAdapter arrayAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item,spinneritems);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        /*final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.category_sort_arrays, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(adapter);*/
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String spinneritemSelected = spinneritems[position].toString();
+                ArrayList<Task> newtaskList = new ArrayList<>();
+                if (position==0){
+                    newtaskList.addAll(taskList);
+                }
+                else{
+                    for (Task t: taskList){
+                        if (t.getCategory().equals(spinneritemSelected)){
+                            newtaskList.add(t);
+                        }
+
+                    }
+                }
+                taskAdaptors.updateList(newtaskList);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         return true;
     }
     @Override
@@ -255,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-
                 taskList.addAll(taskDatabase.taskDao().loadAllTasks());
                 //taskList.add(taskDatabase.taskDao().loadTaskByID());
                 runOnUiThread(new Runnable() {
@@ -315,5 +362,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
        // Log.d(TAG,taskList.get(id).getTitle());
         taskAdaptors.notifyDataSetChanged();
         //taskList.set
+    }
+    public void setUpdateListOnView(int id){
+        Task task=taskDatabase.taskDao().loadTaskByID(id);
+        int z;
+       /* ArrayList<Task> taskList1 =new ArrayList<Task>();
+        taskList1.addAll(taskDatabase.taskDao().loadAllTasks());*/
+       for( z=0;z<taskList.size();z++){
+           Log.d("FUNCTON", "n for"+taskList.get(z).getId()+ id);
+
+           if(taskList.get(z).getId()==id){
+               Log.d("FUNCTON", "insde"+z);
+               taskList.set(z,task);
+               break;
+           }
+           //taskList[]
+
+        }
+       taskAdaptors.notifyItemChanged(z);
+       Log.d("FUNCTON", "workkkkkkiing");
+
+
     }
 }

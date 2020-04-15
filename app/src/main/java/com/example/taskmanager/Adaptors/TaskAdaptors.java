@@ -1,7 +1,9 @@
 package com.example.taskmanager.Adaptors;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolder>{
-
+    Context mContext;
     private ArrayList<Task> tTaskList;
     public TaskAdaptors(ArrayList<Task> list){
         this.tTaskList=list;
@@ -41,6 +43,8 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
     public void onBindViewHolder(@NonNull TaskAdaptors.MyViewHolder myViewholder, int position) {
         myViewholder.title.setText(tTaskList.get(position).getTitle());
         myViewholder.description.setText(tTaskList.get(position).getDescription());
+        myViewholder.category.setText(tTaskList.get(position).getCategory());
+        Log.d("bind","workkiing");
     }
 
     @Override
@@ -90,13 +94,28 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
        notifyDataSetChanged();
 
    }
+  // public void  updatelistonspinner()
+   //updtaelistcategorywise(list){
+   // this.ttasklist=list
+   // notifydatasetchnged();
+   //
+   // }
+    TaskAdaptors(Context context) {
+        mContext = context;
+    }
 
+
+
+   /* public  void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("MyAdapter", "onActivityResult");
+    }*/
 
 
 
     class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView title, description;
+        TextView title, description, category;
         ImageView editImage;
+
         TaskDatabase tDb;
 
 
@@ -105,22 +124,29 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
             //tDb=TaskDatabase.getInstance(context);
             title=itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-TaskAdaptors  a = TaskAdaptors.this;
-MyViewHolder b=this;
+            category = itemView.findViewById(R.id.category);
+            //TaskAdaptors  a = TaskAdaptors.this;
+            //M  yViewHolder b=this;
             editImage = itemView.findViewById(R.id.edit_Image);
             editImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    View.OnClickListener a=  this;
+                    //View.OnClickListener a=  this;
                     int elementId=tTaskList.get(getAdapterPosition()).getId();
-                    Intent i=new Intent(v.getContext(), AddTask.class);
+                    /*Intent i=new Intent(v.getContext(), AddTask.class);
                     i.putExtra(Constants.UPDATE_Task_Id, elementId);
                     //v.getContext().st(i, 2);
+                    //v.getContext().startActivity(i);*/
+                    Intent i=new Intent(v.getContext(), AddTask.class);
+                    i.putExtra(Constants.UPDATE_Task_Id, elementId);
+                    //Intent intent=new Intent(v.getContext(), AddTask.class);
                     //v.getContext().startActivity(i);
+                    ( (Activity)v.getContext()).startActivityForResult(i,2);
 
                 }
             });
 
         }
     }
+
 }

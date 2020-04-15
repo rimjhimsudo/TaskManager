@@ -26,6 +26,8 @@ public interface TaskDao {
     //void  deleteTask(Task task);
     @Query("Select * from TASK WHERE id=:id")
     Task loadTaskByID(int id);
+    @Query("Select * from TASK WHERE category=:category")
+    Task loadTaskByCategory(String category);
 
 }
 

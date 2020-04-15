@@ -62,8 +62,15 @@
         <Button
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:id="@+id/addalarm_button"
             android:clickable="true"
             android:background="@drawable/ic_add_alarm_black_24dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancel_button"
+            android:text="cancel"
+            />
     </LinearLayout>
 
     <!--android:background="@drawable/border"-->
@@ -78,6 +85,7 @@
         android:layout_marginRight="20dp"
         android:padding="20dp"
         />
+
     <Spinner
         android:id="@+id/spinner2"
         android:layout_width="200dp"
