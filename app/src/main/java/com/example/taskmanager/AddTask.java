@@ -197,11 +197,11 @@ public class AddTask extends AppCompatActivity {
         final Task tasksave = new Task(title.getText().toString(),
                 description.getText().toString(),item);
 
+        final  Intent resultintent = new Intent();
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                int val;
-                Intent resultintent = new Intent();
+                final  int val;
                 if (!intent.hasExtra(Constants.UPDATE_Task_Id)) {
                     val = tDb.taskDao().insertTask(tasksave).intValue();
                     resultintent.putExtra("result", val);

@@ -94,6 +94,7 @@ public class TaskAdaptors extends  RecyclerView.Adapter<TaskAdaptors.MyViewHolde
        notifyDataSetChanged();
 
    }
+
   // public void  updatelistonspinner()
    //updtaelistcategorywise(list){
    // this.ttasklist=list

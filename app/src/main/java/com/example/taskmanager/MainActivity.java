@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         //super.onActivityResult(requestCode, resultCode, taskid);
         // check if the request code is same as what is passed  here it is 2
         super.onActivityResult(requestCode, resultCode, taskintent);
-        Log.d(TAG,"show"+resultCode);
-        Log.d(TAG,"show"+requestCode);
+        Log.d(TAG,"showOUT"+resultCode);
+        Log.d(TAG,"showOUT"+requestCode);
         if (requestCode == 2) {
             Log.d(TAG,"showinsde"+resultCode);
             Log.d(TAG,"showinsde"+requestCode);
@@ -251,15 +251,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                String spinneritemSelected = spinneritems[position].toString();
+                String spinneritemSelected = spinneritems[position];
                 ArrayList<Task> newtaskList = new ArrayList<>();
-                if (position==0){
+                if (position==0)
+                {
                     newtaskList.addAll(taskList);
                 }
                 else{
                     for (Task t: taskList){
-                        if (t.getCategory().equals(spinneritemSelected)){
+
+                        Log.d("object","ttle: "+t.getCategory()+ spinneritemSelected);
+                        if (t.getCategory().toLowerCase().trim().equals(spinneritemSelected.toLowerCase().trim())){
                             newtaskList.add(t);
+
                         }
 
                     }
@@ -341,7 +345,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         taskAdaptors.updateList(newtaskList);
         return true;
     }
-
     public void updateListOnView(int id){
         //taskList.clear();
         //tTaskList=new ArrayList<>();
@@ -351,37 +354,44 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         taskAdaptors.notifyDataSetChanged();
        */
         Task task=taskDatabase.taskDao().loadTaskByID(id);
+        String s= task.getCategory();
+        taskList.add(task);
+        taskAdaptors.notifyDataSetChanged();
+        Log.d("nsde write fucntn","s : "+s);
         /*for(Task newTask:taskList){
 
             if(newTask.getId() ==  id){
                 taskList.set()
             }
         }*/
-        taskList.add(task);
+
         //taskList.add(id,task);
-       // Log.d(TAG,taskList.get(id).getTitle());
-        taskAdaptors.notifyDataSetChanged();
+        // Log.d(TAG,taskList.get(id).getTitle());
+
         //taskList.set
     }
     public void setUpdateListOnView(int id){
         Task task=taskDatabase.taskDao().loadTaskByID(id);
+
         int z;
        /* ArrayList<Task> taskList1 =new ArrayList<Task>();
         taskList1.addAll(taskDatabase.taskDao().loadAllTasks());*/
-       for( z=0;z<taskList.size();z++){
-           Log.d("FUNCTON", "n for"+taskList.get(z).getId()+ id);
+        for( z=0;z<taskList.size();z++){
+            Log.d("FUNCTON", "n for"+taskList.get(z).getId()+ id);
 
-           if(taskList.get(z).getId()==id){
-               Log.d("FUNCTON", "insde"+z);
-               taskList.set(z,task);
-               break;
-           }
-           //taskList[]
+            if(taskList.get(z).getId()==id){
+                Log.d("FUNCTON", "insde"+z);
+                taskList.set(z,task);
+                break;
+            }
+            //taskList[]
 
         }
-       taskAdaptors.notifyItemChanged(z);
-       Log.d("FUNCTON", "workkkkkkiing");
+        taskAdaptors.notifyItemChanged(z);
+        Log.d("FUNCTON", "workkkkkkiing");
 
 
     }
+
+
 }
